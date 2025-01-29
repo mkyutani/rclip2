@@ -2,10 +2,12 @@ import json
 import sys
 import requests
 
+from rclip.utils import get_api
+
 def register_message_id(category: str, ttl: int=None) -> str:
     headers = {}
 
-    uri = 'http://localhost/api/v2/messages'
+    uri = get_api('/api/v2/messages')
     options = []
     if category is not None:
         options.append(f'category={category}')
@@ -35,7 +37,7 @@ def register_message_id(category: str, ttl: int=None) -> str:
 
 def send_contents(id: str, contents: list[str]) -> bool:
     headers = { 'Content-Type': 'application/json' }
-    query = f'http://localhost/api/v2/messages/{id}'
+    query = get_api(f'/api/v2/messages/{id}')
     data = json.dumps({
         'texts': contents
     })

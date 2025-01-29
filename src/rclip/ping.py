@@ -2,12 +2,15 @@ import json
 import sys
 import requests
 
+from rclip.utils import get_api
+
 def ping() -> str:
     headers = {}
+    query = get_api('/api/v2/ping')
 
     res = None
     try:
-        res = requests.get('http://localhost/api/v2/ping', headers=headers)
+        res = requests.get(query, headers=headers)
     except Exception as e:
         print(str(e), file=sys.stderr)
         return None

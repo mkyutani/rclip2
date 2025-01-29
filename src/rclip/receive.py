@@ -2,9 +2,11 @@ import json
 import sys
 import requests
 
+from rclip.utils import get_api
+
 def get_structure(key: str) -> dict:
     headers = {}
-    query = f'http://localhost/api/v2/messages/{key}'
+    query = get_api(f'/api/v2/messages/{key}')
 
     res = None
     try:
