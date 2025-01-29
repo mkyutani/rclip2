@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "rclip2"
+version = "0.1.0"
+description = "Remote Clip Client"
+authors = ["Miki Yutani <mkyutani@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+homepage = "https://github.com/mkyutani/rclip2-client"
+repository = "https://github.com/mkyutani/rclip2-client"
+keywords = ["remote", "clip", "client"]
+packages = [{include = "rclip", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+
+[tool.poetry.scripts]
+rclip2 = "rclip.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
