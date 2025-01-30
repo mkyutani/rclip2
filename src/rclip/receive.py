@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64decode
 import json
 import sys
 import requests
@@ -29,7 +29,8 @@ def receive_text(structure: dict) -> bool:
     print('\n'.join(structure['texts']))
     return True
 
-def receive_file(structure: dict, filename: str) -> bool:
+def receive_file(structure: dict, encoded_filename: str) -> bool:
+    filename = urlsafe_b64decode(encoded_filename.encode('utf-8')).decode('utf-8')
     with open(filename, 'wb') as f:
         for b64data in structure['texts']:
             f.write(b64decode(b64data.encode('utf-8')))

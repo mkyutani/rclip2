@@ -1,4 +1,4 @@
-from base64 import b64encode
+from base64 import b64encode, urlsafe_b64encode
 import json
 import os
 import sys
@@ -72,13 +72,15 @@ def send_text(text: str, ttl: int) -> bool:
 
     return True
 
-def send_file(file: str, ttl: int) -> bool:
-    basename = os.path.basename(file)
-    id = register_message_id(category=f'file:{basename}', ttl=ttl)
+def send_file(expanded_filename: str, ttl: int) -> bool:
+    expanded_filename = os.path.expanduser(expanded_filename)
+    basename = os.path.basename(expanded_filename)
+    encoded_filename = urlsafe_b64encode(basename.encode('utf-8')).decode('utf-8')
+    id = register_message_id(category=f'file:{encoded_filename}', ttl=ttl)
     if id is None:
         return False
 
-    with open(file, 'rb') as f:
+    with open(expanded_filename, 'rb') as f:
         count = 0
         b64data = []
         while True:
