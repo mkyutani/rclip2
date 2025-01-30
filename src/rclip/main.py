@@ -3,7 +3,7 @@ import io
 import signal
 import sys
 
-from rclip import ping, receive, send
+from rclip import flush, ping, receive, send
 
 def setup():
     signal.signal(signal.SIGINT, lambda num, frame: sys.exit(1))
@@ -39,6 +39,8 @@ def main() -> int:
                 status = True
             else:
                 status = False
+        elif args.key.lower() == 'flush':
+            status = flush()
         else:
             status = receive(args.key)
 
