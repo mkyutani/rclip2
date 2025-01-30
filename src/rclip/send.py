@@ -1,4 +1,6 @@
+from base64 import b64encode
 import json
+import os
 import sys
 import requests
 
@@ -70,9 +72,33 @@ def send_text(text: str, ttl: int) -> bool:
 
     return True
 
-def send_file(file: str) -> bool:
-    print('Not implemented', file=sys.stderr)
-    return False
+def send_file(file: str, ttl: int) -> bool:
+    basename = os.path.basename(file)
+    id = register_message_id(category=f'file:{basename}', ttl=ttl)
+    if id is None:
+        return False
+
+    with open(file, 'rb') as f:
+        count = 0
+        b64data = []
+        while True:
+            data = f.read(65536)
+            if not data:
+                break
+            b64data.append(b64encode(data).decode('utf-8'))
+            count += 1
+            if count >= 10:
+                status = send_contents(id, b64data)
+                if status is False:
+                    return False
+                count = 0
+                b64data = []
+        if count > 0:
+            status = send_contents(id, b64data)
+            if status is False:
+                return False
+
+    return True
 
 def send(text: str=None, file: str=None, ttl: int=None) -> bool:
     if text is not None:

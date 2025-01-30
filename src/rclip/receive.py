@@ -1,3 +1,4 @@
+from base64 import b64decode
 import json
 import sys
 import requests
@@ -24,8 +25,15 @@ def get_structure(key: str) -> dict:
 
     return structure
 
-def print_text(structure: dict) -> bool:
+def receive_text(structure: dict) -> bool:
     print('\n'.join(structure['texts']))
+    return True
+
+def receive_file(structure: dict, filename: str) -> bool:
+    with open(filename, 'wb') as f:
+        for b64data in structure['texts']:
+            f.write(b64decode(b64data.encode('utf-8')))
+
     return True
 
 def receive(key: str) -> bool:
@@ -33,10 +41,9 @@ def receive(key: str) -> bool:
     if structure is None:
         return False
     elif structure['category'] == 'text':
-        return print_text(structure)
-    elif structure['category'] == 'file':
-        print('Not implemented', file=sys.stderr)
-        return False
+        return receive_text(structure)
+    elif structure['category'].startswith('file:'):
+        return receive_file(structure, structure['category'][5:])
     else:
         print('Unknown category', file=sys.stderr)
         return False
