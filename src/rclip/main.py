@@ -15,7 +15,7 @@ def main() -> int:
     setup()
 
     parser = argparse.ArgumentParser(description='Remote Clip Client')
-    parser.add_argument('key', nargs='?', type=str, default=None, help='Key to receive data')
+    parser.add_argument('key', nargs='?', type=str, metavar='KEY|ping|flush', default=None, help='Key to receive data, ping or flush server data')
     parser.add_argument('-T', '--ttl', type=int, default=None, help='Time to live for the message')
     input_type = parser.add_mutually_exclusive_group()
     input_type.add_argument('-f', '--file', type=str, help='File to send')
