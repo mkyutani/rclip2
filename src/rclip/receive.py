@@ -3,7 +3,7 @@ import json
 import sys
 import requests
 
-from rclip.utils import get_api
+from rclip.utils import get_api, get_crypt_key, decrypt
 
 def get_structure(key: str) -> dict:
     headers = {}
@@ -26,13 +26,32 @@ def get_structure(key: str) -> dict:
     return structure
 
 def receive_text(structure: dict) -> bool:
-    print('\n'.join(structure['texts']))
+    texts = structure['texts']
+    crypt_key = get_crypt_key()
+    if crypt_key is not None:
+        try:
+            texts = [decrypt(text, crypt_key) for text in texts]
+        except Exception as e:
+            print(f'Failed to decrypt: {str(e)}', file=sys.stderr)
+            return False
+    
+    print('\n'.join(texts))
     return True
 
 def receive_file(structure: dict, encoded_filename: str) -> bool:
     filename = urlsafe_b64decode(encoded_filename.encode('utf-8')).decode('utf-8')
+    b64data_list = structure['texts']
+    
+    crypt_key = get_crypt_key()
+    if crypt_key is not None:
+        try:
+            b64data_list = [decrypt(b64data, crypt_key) for b64data in b64data_list]
+        except Exception as e:
+            print(f'Failed to decrypt: {str(e)}', file=sys.stderr)
+            return False
+    
     with open(filename, 'wb') as f:
-        for b64data in structure['texts']:
+        for b64data in b64data_list:
             f.write(b64decode(b64data.encode('utf-8')))
 
     return True

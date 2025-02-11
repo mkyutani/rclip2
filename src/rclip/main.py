@@ -4,6 +4,7 @@ import signal
 import sys
 
 from rclip import flush, ping, receive, send
+from rclip.utils import generate_crypt_key
 
 def setup():
     signal.signal(signal.SIGINT, lambda num, frame: sys.exit(1))
@@ -15,7 +16,7 @@ def main() -> int:
     setup()
 
     parser = argparse.ArgumentParser(description='Remote Clip Client')
-    parser.add_argument('key', nargs='?', type=str, metavar='KEY|ping|flush', default=None, help='Key to receive data, ping or flush server data')
+    parser.add_argument('key', nargs='?', type=str, metavar='KEY|ping|generate|flush', default=None, help='Key to receive data, ping, generate key or flush server data')
     parser.add_argument('-T', '--ttl', type=int, default=None, help='Time to live for the message')
     input_type = parser.add_mutually_exclusive_group()
     input_type.add_argument('-f', '--file', type=str, help='File to send')
@@ -39,6 +40,10 @@ def main() -> int:
                 status = True
             else:
                 status = False
+        elif args.key.lower() == 'generate':
+            key = generate_crypt_key()
+            print(key)
+            status = True
         elif args.key.lower() == 'flush':
             status = flush()
         else:

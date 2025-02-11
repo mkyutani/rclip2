@@ -4,7 +4,7 @@ import os
 import sys
 import requests
 
-from rclip.utils import get_api
+from rclip.utils import get_api, get_crypt_key, encrypt
 
 def register_message_id(category: str, ttl: int=None) -> str:
     headers = {}
@@ -40,6 +40,11 @@ def register_message_id(category: str, ttl: int=None) -> str:
 def send_contents(id: str, contents: list[str]) -> bool:
     headers = { 'Content-Type': 'application/json' }
     query = get_api(f'/api/v2/messages/{id}')
+    
+    crypt_key = get_crypt_key()
+    if crypt_key is not None:
+        contents = [encrypt(text, crypt_key) for text in contents]
+    
     data = json.dumps({
         'texts': contents
     })
