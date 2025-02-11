@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "rclip2"
-version = "0.1.0"
+name = "rclip"
+version = "2.0.1"
 description = "Remote Clip Client"
 authors = ["Miki Yutani <mkyutani@gmail.com>"]
 license = "MIT License"
@@ -16,7 +16,7 @@ requests = "^2.32.3"
 cryptography = "^44.0.0"
 
 [tool.poetry.scripts]
-rclip2 = "rclip.main:main"
+rclip = "rclip.main:main"
 
 [build-system]
 requires = ["poetry-core"]
